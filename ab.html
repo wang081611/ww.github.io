@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <title>第2次团辅 · 发现例外的闪光时刻</title>
+  <style>
+    :root {
+      --bg: #FFF9F2;
+      --card-bg: #FDF8F2;
+      --accent: #A3907A;
+      --dark: #5C4B3A;
+      --gold: #C4A97D;
+      --highlight: #FCF7F0;
+      --border: #DCD3C6;
+      --soft: #F3E9DF;
+      --text: #4A3F35;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+      background: linear-gradient(145deg, #F9F3E9 0%, #FDF8F3 50%, #F6EFE5 100%);
+      background-attachment: fixed;
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .container {
+      max-width: 780px;
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 36px;
+      padding: 28px 22px;
+      box-shadow: 0 10px 40px rgba(100, 70, 40, 0.08), 0 0 0 1px rgba(200, 180, 150, 0.2);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .header h1 {
+      font-size: 1.8em;
+      color: var(--dark);
+      font-weight: 500;
+      letter-spacing: 2px;
+    }
+
+    .header .sub {
+      color: var(--accent);
+      font-size: 1em;
+      letter-spacing: 3px;
+      margin-top: 4px;
+      font-weight: 300;
+    }
+
+    .info-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 18px 0 10px;
+      font-size: 0.95em;
+    }
+
+    .info-row input {
+      border: none;
+      border-bottom: 2px dashed #CCC5B8;
+      background: transparent;
+      padding: 6px 10px;
+      width: 90px;
+      text-align: center;
+      font-size: 0.95em;
+      outline: none;
+      transition: 0.3s;
+      color: var(--text);
+    }
+
+    .info-row input:focus {
+      border-bottom-color: var(--accent);
+    }
+
+    .info-row input[type="date"] {
+      width: 140px;
+    }
+
+    .quote {
+      text-align: center;
+      color: var(--accent);
+      font-style: italic;
+      margin: 16px 0 20px;
+      padding: 10px 20px;
+      background: var(--highlight);
+      border-radius: 40px;
+      font-size: 0.9em;
+      border: 1px solid var(--border);
+      letter-spacing: 0.5px;
+    }
+
+    .section-title {
+      font-weight: 600;
+      font-size: 1.2em;
+      color: var(--dark);
+      border-left: 6px solid var(--gold);
+      padding-left: 14px;
+      margin: 32px 0 14px;
+      letter-spacing: 1px;
+    }
+
+    /* 音乐控制 */
+    .music-ctrl {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.85em;
+    }
+
+    .music-btn {
+      background: var(--soft);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 1.2em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--dark);
+      transition: 0.3s;
+    }
+
+    .music-btn:hover {
+      background: #E8DCCF;
+    }
+
+    /* OH卡区域 */
+    .oh-draw-area {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .oh-card {
+      display: inline-block;
+      width: 200px;
+      height: 280px;
+      border-radius: 24px;
+      border: 3px solid var(--gold);
+      background: linear-gradient(135deg, #FDF8F2 0%, #F9F1E4 100%);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 20px rgba(140, 110, 70, 0.12);
+      vertical-align: top;
+    }
+
+    .oh-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 32px rgba(120, 90, 50, 0.18);
+      border-color: #B09060;
+    }
+
+    .oh-card:active {
+      transform: scale(0.96);
+    }
+
+    .oh-card .card-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 20px;
+    }
+
+    .oh-card .card-emoji {
+      font-size: 70px;
+      transition: transform 0.4s;
+    }
+
+    .oh-card .card-name {
+      font-weight: 600;
+      color: var(--dark);
+      margin-top: 10px;
+      font-size: 1.2em;
+    }
+
+    .oh-card .card-keywords {
+      font-size: 0.75em;
+      color: #8F806A;
+      margin-top: 6px;
+    }
+
+    .oh-card .card-desc {
+      font-size: 0.7em;
+      color: #A89880;
+      margin-top: 8px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .oh-card.back {
+      background: linear-gradient(145deg, #E2D5C0 0%, #D4C3A5 30%, #E6DBCA 60%, #C8B38A 100%);
+      border-color: #B09060;
+    }
+
+    .oh-card.back .card-inner {
+      justify-content: center;
+    }
+
+    .oh-card.back .back-text {
+      font-size: 40px;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 700;
+      letter-spacing: 8px;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    .oh-card.back .back-sub {
+      font-size: 14px;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 8px;
+      letter-spacing: 4px;
+    }
+
+    .btn-row {
+      margin-top: 16px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 24px;
+      border-radius: 30px;
+      border: none;
+      font-size: 0.95em;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+      background: white;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+      font-family: inherit;
+      color: var(--dark);
+      border: 1px solid var(--border);
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: white;
+      border: none;
+      box-shadow: 0 6px 16px rgba(163, 144, 122, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #8E7C68;
+    }
+
+    .btn-secondary {
+      background: var(--gold);
+      color: white;
+      border: none;
+    }
+
+    .btn-outline {
+      background: transparent;
+    }
+
+    .card-history {
+      font-size: 0.8em;
+      color: #999;
+      margin-top: 8px;
+      min-height: 22px;
+    }
+
+    .question-block {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 18px;
+      margin: 16px 0;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+    }
+
+    .question-block h4 {
+      color: var(--dark);
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .question-block .hint {
+      font-size: 0.85em;
+      color: #8A7B6A;
+      margin-bottom: 10px;
+    }
+
+    .question-block textarea {
+      width: 100%;
+      min-height: 70px;
+      border: 2px dashed #DDD4C4;
+      border-radius: 14px;
+      padding: 12px;
+      font-size: 0.9em;
+      resize: vertical;
+      background: #FFFCF8;
+      outline: none;
+      transition: 0.3s;
+      font-family: inherit;
+      color: var(--text);
+    }
+
+    .question-block textarea:focus {
+      border-color: var(--accent);
+      border-style: solid;
+    }
+
+    .hint-btn {
+      background: none;
+      border: none;
+      color: var(--accent);
+      font-size: 0.85em;
+      cursor: pointer;
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* 提示弹窗 */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-box {
+      background: white;
+      border-radius: 28px;
+      padding: 24px;
+      max-width: 340px;
+      width: 85%;
+      position: relative;
+      text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #888;
+      line-height: 1;
+      transition: 0.2s;
+    }
+    .modal-close:hover { color: #333; }
+
+    .modal-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .modal-buttons button {
+      padding: 10px 20px;
+      border-radius: 30px;
+      border: 1px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-family: inherit;
+      transition: 0.2s;
+      font-size: 0.95em;
+    }
+    .btn-yes {
+      background: var(--accent) !important;
+      color: white !important;
+      border: none !important;
+    }
+
+    #modalAnswer {
+      margin-top: 16px;
+      font-style: italic;
+      color: var(--dark);
+      display: none;
+      background: #FDF8F2;
+      padding: 10px;
+      border-radius: 12px;
+    }
+
+    /* 画布等样式不变，省略... */
+    .canvas-container {
+      display: inline-block;
+      border: 2px dashed var(--border);
+      border-radius: 20px;
+      background: #FFFDF8;
+      touch-action: none;
+      margin: 10px 0;
+    }
+    canvas {
+      display: block;
+      cursor: crosshair;
+      border-radius: 18px;
+      max-width: 100%;
+      height: auto;
+    }
+    .canvas-tools {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 10px 0;
+    }
+    .canvas-tools button, .canvas-tools input {
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      background: white;
+      cursor: pointer;
+      font-size: 0.85em;
+    }
+    .canvas-tools button.active {
+      background: var(--accent);
+      color: white;
+    }
+
+    .commit-row, .score-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 14px 0;
+    }
+    .commit-item {
+      flex: 1;
+      background: #FAF7F2;
+      border-radius: 16px;
+      padding: 14px;
+      border: 1px solid var(--border);
+    }
+    .score-display {
+      font-size: 1.8em;
+      font-weight: 600;
+      color: var(--accent);
+      background: #FDF8F2;
+      padding: 4px 14px;
+      border-radius: 12px;
+    }
+    .mood-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0;
+    }
+    .mood-tag {
+      padding: 8px 18px;
+      border-radius: 25px;
+      background: white;
+      border: 1px solid #DDD4C4;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .mood-tag.selected {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+    .export-row {
+      text-align: center;
+      margin: 30px 0 10px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .footer-note {
+      text-align: center;
+      color: #C2B6A6;
+      font-size: 0.8em;
+      margin-top: 20px;
+    }
+
+    @media print {
+      body { background: white; }
+      .container { box-shadow: none; backdrop-filter: none; background: white; }
+      .music-ctrl, .btn-row, .canvas-tools, .export-row, .hint-btn, .modal-overlay { display: none !important; }
+      textarea, input { border: 1px solid #aaa; background: white; }
+      .oh-card { box-shadow: none; border: 1px solid #999; }
+      canvas { border: 1px solid #999; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="music-ctrl">
+    <button class="music-btn" id="musicToggle" onclick="toggleMusic()">🎵 开启音乐</button>
+    <audio id="bgMusic" loop preload="none" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-9.mp3"></audio>
+  </div>
+
+  <div class="header">
+    <h1>🎯 团体辅导 · 第2次活动</h1>
+    <div class="sub">发现“例外”的闪光时刻</div>
+    <div class="info-row">
+      <span>👤 姓名 <input type="text" id="nameInput" placeholder="_________"></span>
+      <span>📚 班级 <input type="text" id="classInput" placeholder="_________"></span>
+      <span>📅 日期 <input type="date" id="dateInput"></span>
+    </div>
+  </div>
+
+  <div class="quote">✨ 每个人都是自己生活的专家。没有对错，只有真实的感受与发现。</div>
+
+  <div class="section-title">第一部分 · OH卡探索 —— 发掘我的内在资源</div>
+  <p style="color:var(--accent); text-align:center; font-size:0.9em;">🃏 点击卡牌背面，凭直觉抽取一张属于你的OH卡</p>
+
+  <div class="oh-draw-area">
+    <div class="oh-card back" id="ohCard" onclick="drawCard()">
+      <div class="card-inner"><div class="back-text">OH</div><div class="back-sub">点击抽取</div></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="drawCard()">🎴 抽取卡牌</button>
+      <button class="btn btn-secondary" onclick="reshuffleCards()">🔀 重新洗牌</button>
+    </div>
+    <div class="card-history" id="cardHistory">📋 尚未抽取卡牌</div>
+  </div>
+
+  <!-- 问题1 -->
+  <div class="question-block">
+    <h4>1. 描述</h4>
+    <p class="hint">这张卡牌上有什么？它可能代表一种什么品质或状态？</p>
+    <textarea id="q1" placeholder="我看到…… 这让我想到……"></textarea>
+    <button class="hint-btn" onclick="showHint('q1')">💡 提示</button>
+  </div>
+
+  <!-- 问题2 -->
+  <div class="question-block">
+    <h4>2. 连接</h4>
+    <p class="hint" id="q2Hint">这张卡牌所代表的品质或力量（勇气、创造力、好奇心……），在你过去的什么时候展现过？哪怕是很小的瞬间。</p>
+    <textarea id="q2" placeholder="那一次，我展现了……的力量……"></textarea>
+    <button class="hint-btn" onclick="showHint('q2')">💡 提示</button>
+  </div>
+
+  <!-- 问题3 -->
+  <div class="question-block">
+    <h4>3. 应用</h4>
+    <p class="hint">这个内在资源将如何帮助你减少对手机的依赖，或更健康地与手机相处？</p>
+    <textarea id="q3" placeholder="我可以运用这个资源来……"></textarea>
+    <button class="hint-btn" onclick="showHint('q3')">💡 提示</button>
+  </div>
+
+  <!-- 第二部分 -->
+  <div class="section-title">第二部分 · 绘画表达 —— 我的“高光时刻”</div>
+  <p style="color:#8A7B6A; font-size:0.9em;"><b>✏️ 创作指令：</b>回忆一个<b>不需要手机、让你无比充实、快乐、有成就感</b>的时刻，在下框中自由涂鸦。</p>
+  <div class="canvas-container">
+    <canvas id="drawCanvas" width="600" height="350"></canvas>
+  </div>
+  <div class="canvas-tools">
+    <button id="penTool" class="active" onclick="setTool('pen')">🖊️ 画笔</button>
+    <button id="eraserTool" onclick="setTool('eraser')">🧹 橡皮</button>
+    <input type="color" id="colorPicker" value="#5C4B3A">
+    <input type="range" id="brushSize" min="1" max="20" value="3">
+    <button onclick="clearCanvas()">🗑️ 清空</button>
+  </div>
+  <div class="question-block">
+    <h4>⚡ 画中哪个部分最能代表你的力量？</h4>
+    <textarea id="qDrawing" placeholder="画中的……部分最能代表我的力量……"></textarea>
+  </div>
+
+  <div class="section-title">✍️ 第三部分 · 行动承诺</div>
+  <div class="commit-row">
+    <div class="commit-item"><label>🎯 执行时间</label><input type="text" id="commitTime" placeholder="例如：下周一至周日"></div>
+    <div class="commit-item"><label>🏆 自我奖励</label><input type="text" id="commitReward" placeholder="如果完成，我怎样肯定自己？"></div>
+  </div>
+
+  <div class="section-title">第四部分 · 自我评估 & 例外觉察</div>
+  <p><b>① 标尺评分</b> (0=被手机控制, 10=我能很好管理)</p>
+  <div class="score-row">
+    <input type="range" id="scoreSlider" min="0" max="10" value="5" oninput="updateScore()">
+    <span class="score-display" id="scoreDisplay">5</span> 分
+  </div>
+  <div id="changeBtns" style="margin:8px 0;">
+    <button onclick="selectChange('up',this)">上升⬆</button>
+    <button onclick="selectChange('flat',this)">持平➡</button>
+    <button onclick="selectChange('down',this)">下降⬇</button>
+  </div>
+  <p><i>希望下次达到：</i> <input type="number" id="targetScore" value="7" min="0" max="10" style="width:60px;"> 分</p>
+
+  <p><b>② 例外时刻觉察</b></p>
+  <textarea id="qException" style="width:100%; min-height:70px; border:2px dashed #DDD4C4; border-radius:14px; padding:12px;"></textarea>
+
+  <p><b>③ 一句话心情总结</b></p>
+  <div class="mood-tags" id="moodTags">
+    <span class="mood-tag" onclick="toggleMood(this)">😊 温暖</span>
+    <span class="mood-tag" onclick="toggleMood(this)">😌 平静</span>
+    <span class="mood-tag" onclick="toggleMood(this)">💪 有力量</span>
+    <span class="mood-tag" onclick="toggleMood(this)">🌱 充满希望</span>
+    <span class="mood-tag" onclick="toggleMood(this)">🤔 在思考</span>
+    <span class="mood-tag" onclick="toggleMood(this)">🎉 开心</span>
+  </div>
+  <input type="text" id="customMood" placeholder="或输入你自己的感受……" style="width:100%; margin-top:8px; border:2px dashed #DDD4C4; border-radius:14px; padding:10px;">
+
+  <div class="export-row">
+    <button class="btn btn-primary" onclick="window.print()">🖨️ 打印文档</button>
+    <button class="btn" onclick="saveToBrowser()">💾 保存到本地</button>
+    <button class="btn" onclick="loadFromBrowser()">📂 读取保存</button>
+    <button class="btn btn-secondary" onclick="resetAll()">🔄 全部重置</button>
+  </div>
+  <div class="footer-note">🌟 每个人都是自己生活的专家 🌟</div>
+</div>
+
+<!-- 提示弹窗（改进版，带关闭按钮） -->
+<div class="modal-overlay" id="hintModal" onclick="closeHintModal()">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeHintModal()">✕</button>
+    <p style="font-size:1.2em; margin-bottom:10px;">💬 再想一想？</p>
+    <p id="hintQuestion" style="color:#666;"></p>
+    <div class="modal-buttons" id="modalButtons">
+      <button onclick="closeHintModal()">再想想</button>
+      <button class="btn-yes" onclick="showAnswer()">看看提示</button>
+    </div>
+    <div id="modalAnswer"></div>
+  </div>
+</div>
+
+<script>
+  // ========== 70张卡牌数据 ==========
+  const cardDeck = [
+    {emoji:'🌟', name:'星光', keywords:'希望·指引·内在光明', desc:'夜空中闪耀的星，提醒你内在的光芒。', answer:'你拥有照亮自己道路的力量，即使在黑暗中也别忘了抬头看星星。'},
+    {emoji:'🌳', name:'大树', keywords:'扎根·成长·坚韧', desc:'深深扎根，不断向上生长的力量。', answer:'你的坚持和耐心，就像大树一样，时间会证明你的茁壮。'},
+    {emoji:'🌊', name:'海浪', keywords:'流动·情感·力量', desc:'潮起潮落，接纳情绪的流动。', answer:'允许自己像海浪一样起伏，每一次退去都是为了下一次前进。'},
+    {emoji:'🕊️', name:'白鸽', keywords:'和平·自由·希望', desc:'展翅飞翔，传递和平与希望。', answer:'内心的平静是你最珍贵的自由，记得给自己喘息的空间。'},
+    {emoji:'🔥', name:'火焰', keywords:'热情·勇气·蜕变', desc:'燃烧的火焰，点燃行动的热情。', answer:'你的热情可以融化恐惧，哪怕微小的火苗也能燎原。'},
+    {emoji:'🏔️', name:'高山', keywords:'坚定·目标·超越', desc:'巍峨山峰，召唤你超越自我。', answer:'每一步攀登都算数，你比自己想象的更强大。'},
+    {emoji:'🌈', name:'彩虹', keywords:'希望·多元·美好', desc:'雨后彩虹，多样性中的美丽。', answer:'风雨过后总有惊喜，你的独特色彩无人能替。'},
+    {emoji:'🦋', name:'蝴蝶', keywords:'蜕变·自由·美丽', desc:'破茧成蝶，拥抱改变。', answer:'改变可能辛苦，但你会飞向更美的地方。'},
+    {emoji:'⚓', name:'船锚', keywords:'稳定·安全·归属', desc:'稳固的锚，让你在风浪中安定。', answer:'找到让你安心的那个点，外在风浪再大，心也不乱。'},
+    {emoji:'🔑', name:'钥匙', keywords:'开启·机会·解决', desc:'一把钥匙，打开新的可能性。', answer:'答案就在你手中，勇敢去尝试那扇未知的门吧。'},
+    {emoji:'🌻', name:'向日葵', keywords:'乐观·向阳·生命力', desc:'始终朝向光明，积极生长。', answer:'你的注意力在哪里，能量就在哪里。转向阳光，阴影就在身后。'},
+    {emoji:'🛡️', name:'盾牌', keywords:'保护·边界·安全', desc:'坚盾护体，守护自己的边界。', answer:'学会说“不”是保护自己的重要力量。'},
+    {emoji:'🎈', name:'气球', keywords:'轻松·释放·上升', desc:'放下沉重，轻盈上升。', answer:'有些包袱可以暂时放下，让自己自由飘一会儿。'},
+    {emoji:'🧭', name:'指南针', keywords:'方向·选择·探索', desc:'指引方向，找到属于你的路。', answer:'内心的价值观就是你的指南针，跟随它就不会迷失。'},
+    {emoji:'🌙', name:'月亮', keywords:'宁静·内省·周期', desc:'月光温柔，陪伴你的内省时刻。', answer:'在安静中，你能听见自己真实的声音。'},
+    {emoji:'💎', name:'钻石', keywords:'珍贵·坚韧·价值', desc:'历经打磨，你是独一无二的珍宝。', answer:'压力让你更闪耀，你的价值不需要别人定义。'},
+    {emoji:'🌿', name:'新芽', keywords:'新生·希望·成长', desc:'破土而出，新的开始。', answer:'每一次开始都不晚，嫩芽也能长成大树。'},
+    {emoji:'🎭', name:'面具', keywords:'角色·探索·多元', desc:'探索不同的自我面向。', answer:'你可以有很多面，每一面都是真实的你，不必隐藏。'},
+    {emoji:'⏳', name:'沙漏', keywords:'时间·耐心·过程', desc:'每一粒沙都是珍贵的当下。', answer:'珍惜此刻，时间会把最好的留给你。'},
+    {emoji:'🧩', name:'拼图', keywords:'整合·完整·连接', desc:'每一块都是完整自我的拼图。', answer:'你所经历的一切组成了独特的你，缺一不可。'},
+    {emoji:'🌅', name:'日出', keywords:'新开始·希望·活力', desc:'黎明破晓，崭新的一天。', answer:'无论昨天如何，今天太阳照常升起，你也有重新开始的机会。'},
+    {emoji:'🎵', name:'音符', keywords:'和谐·表达·创造', desc:'旋律流淌，表达内心声音。', answer:'用你的方式表达自己，哪怕只是哼一首歌。'},
+    {emoji:'📚', name:'书籍', keywords:'知识·智慧·积累', desc:'翻开书页，探索未知世界。', answer:'学习是终身的礼物，每一页都让你更丰富。'},
+    {emoji:'🧘', name:'冥想者', keywords:'平静·觉察·当下', desc:'呼吸之间，回归内在中心。', answer:'暂停一下，深呼吸，答案有时就在静默中。'},
+    {emoji:'🎨', name:'调色盘', keywords:'创意·色彩·表达', desc:'混合色彩，创造你的世界。', answer:'生活是一张画布，你可以自由描绘。'},
+    {emoji:'🚀', name:'火箭', keywords:'突破·速度·梦想', desc:'冲破引力，飞向梦想。', answer:'别怕失败，每一次发射都是勇敢的尝试。'},
+    {emoji:'🧲', name:'磁铁', keywords:'吸引·能量·关系', desc:'吸引同频的人与事。', answer:'你散发什么能量，就会吸引什么。保持积极，好事将近。'},
+    {emoji:'🪴', name:'盆栽', keywords:'照料·耐心·生机', desc:'细心培育，静待花开。', answer:'对自己也要像照料植物一样，给予耐心和爱。'},
+    {emoji:'☕', name:'热茶', keywords:'温暖·停顿·享受', desc:'一杯暖茶，片刻安宁。', answer:'忙碌中记得给自己一杯茶的时间，安顿身心。'},
+    {emoji:'🧶', name:'毛线', keywords:'编织·耐心·创作', desc:'一针一线，编织温暖。', answer:'人生如编织，耐心会织出美丽的图案。'},
+    {emoji:'🪁', name:'风筝', keywords:'自由·高度·牵绊', desc:'逆风飞翔，线在手中。', answer:'自由与责任并存，你可以飞得高，也知道归处。'},
+    {emoji:'🎁', name:'礼物', keywords:'惊喜·感恩·馈赠', desc:'每一份礼物都藏着心意。', answer:'你本身就是一份礼物，别忘了欣赏自己。'},
+    {emoji:'🕯️', name:'蜡烛', keywords:'奉献·温暖·微光', desc:'微小烛光，驱散黑暗。', answer:'即使微弱，你的光也能照亮别人。'},
+    {emoji:'🍀', name:'四叶草', keywords:'幸运·希望·偶然', desc:'传说中幸运的象征。', answer:'幸运往往眷顾那些努力的人，你的坚持就是幸运的种子。'},
+    {emoji:'🎈', name:'热气球', keywords:'冒险·俯瞰·升华', desc:'缓缓升空，看到更远风景。', answer:'换个角度，问题可能变得很小。'},
+    {emoji:'🧸', name:'泰迪熊', keywords:'安慰·童年·温暖', desc:'柔软的拥抱，安抚心灵。', answer:'累了就抱抱自己，像小时候那样安慰自己。'},
+    {emoji:'🏞️', name:'山水', keywords:'自然·宁静·和谐', desc:'山水之间，回归平和。', answer:'大自然是很好的疗愈师，去走走，找回平静。'},
+    {emoji:'🎬', name:'场记板', keywords:'开始·行动·导演', desc:'人生如戏，你可以导演自己的故事。', answer:'你是自己人生的导演，喊“Action”就可以开始新的一幕。'},
+    {emoji:'🔭', name:'望远镜', keywords:'远见·探索·视野', desc:'看向远方，心怀宇宙。', answer:'把眼光放长远，眼前的困难只是一个小点。'},
+    {emoji:'🧲', name:'磁石', keywords:'吸引力·能量·聚焦', desc:'同频共振，吸引美好。', answer:'专注在你想要的，宇宙会帮你实现。'},
+    {emoji:'🪞', name:'镜子', keywords:'反射·真实·自我', desc:'看清自己，接纳全部。', answer:'镜子里的你值得被爱，无论优点缺点。'},
+    {emoji:'🎀', name:'丝带', keywords:'联结·柔软·装饰', desc:'柔软的丝带，联结美好。', answer:'温柔地对待自己，也温柔地连接他人。'},
+    {emoji:'🧩', name:'拼板', keywords:'契合·耐心·整体', desc:'每一片都重要，拼成完整图画。', answer:'即使暂时找不到位置，你也已经拥有很多。'},
+    {emoji:'🎭', name:'戏剧面具', keywords:'表达·角色·故事', desc:'你有许多面，都是真实的演员。', answer:'在不同的场合你扮演不同角色，但核心的自己从未改变。'},
+    {emoji:'🪴', name:'绿萝', keywords:'适应·蔓延·生命力', desc:'只要有水就能生长。', answer:'你比自己想象的更具适应力，环境再难也能找到生机。'},
+    {emoji:'🌌', name:'银河', keywords:'浩瀚·神秘·无限', desc:'无数星光汇聚成河。', answer:'你也是星河中的一粒光，看似渺小，却独一无二。'},
+    {emoji:'🧳', name:'行李箱', keywords:'旅程·准备·记忆', desc:'装好行囊，准备出发。', answer:'过去的经历都装进你的箱子，成为前行的底气。'},
+    {emoji:'🎯', name:'靶心', keywords:'专注·目标·精准', desc:'瞄准目标，一击即中。', answer:'把能量集中在一个方向，你会事半功倍。'},
+    {emoji:'🍂', name:'落叶', keywords:'放下·循环·归根', desc:'落叶归根，滋养新生。', answer:'学会放下，是为了更轻盈的成长。'},
+    {emoji:'🎈', name:'肥皂泡', keywords:'梦幻·短暂·美好', desc:'阳光下五彩斑斓。', answer:'珍惜易逝的美好，它们教会我们活在当下。'},
+    {emoji:'🧊', name:'冰块', keywords:'冷静·透明·融化', desc:'保持冷静，清晰思考。', answer:'情绪过热时，给自己一块“冰”降降温。'},
+    {emoji:'🧵', name:'针线', keywords:'修补·缝合·愈合', desc:'一针一线，弥补裂痕。', answer:'伤口可以被缝合，时间会让它愈合。'},
+    {emoji:'🎻', name:'小提琴', keywords:'优雅·练习·和谐', desc:'弦上之舞，需要反复练习。', answer:'任何技能都需要时间打磨，对自己耐心点。'},
+    {emoji:'🛶', name:'独木舟', keywords:'平衡·前行·独处', desc:'一人一桨，缓缓前行。', answer:'有时候你需要独处，享受自己的节奏。'},
+    {emoji:'🏕️', name:'篝火', keywords:'温暖·聚集·故事', desc:'围炉夜话，分享故事。', answer:'与他人分享你的经历，你会发现并不孤单。'},
+    {emoji:'🌰', name:'坚果', keywords:'坚硬·营养·保护', desc:'坚硬外壳，藏有营养。', answer:'你可能外表坚硬，但内心柔软丰富，值得被了解。'},
+    {emoji:'🪜', name:'梯子', keywords:'上升·阶梯·进步', desc:'一步一步，向上攀登。', answer:'每天进步一点点，回头看已走了很远。'},
+    {emoji:'🧪', name:'实验瓶', keywords:'尝试·混合·发现', desc:'混合试探，发现新事物。', answer:'把生活当做实验，没有失败，只有反馈。'},
+    {emoji:'🎤', name:'麦克风', keywords:'发声·表达·勇气', desc:'说出你的声音。', answer:'你的声音很重要，勇敢表达自己。'},
+    {emoji:'🌬️', name:'风', keywords:'自由·无形·力量', desc:'看不见却能感知的力量。', answer:'温柔的力量也能改变世界，就像风雕刻岩石。'},
+    {emoji:'🪵', name:'木柴', keywords:'积累·燃烧·能量', desc:'柴火虽小，聚能生火。', answer:'微小的努力积累起来，终会点燃成功的火焰。'},
+    {emoji:'👑', name:'皇冠', keywords:'自信·荣耀·责任', desc:'戴上皇冠，你就是自己的王。', answer:'你生来就有价值，为自己加冕。'},
+    {emoji:'🐚', name:'海螺', keywords:'倾听·回忆·大海', desc:'贴近耳朵，听见大海的声音。', answer:'有时你需要静下来，听听内心的潮汐。'},
+    {emoji:'🌱', name:'种子', keywords:'潜能·开始·孕育', desc:'小小的种子，蕴含整个森林。', answer:'你心中有一颗伟大的种子，给它阳光和水分。'},
+    {emoji:'💡', name:'灯泡', keywords:'灵感·顿悟·光明', desc:'瞬间点亮思维。', answer:'别忽略灵光一闪的瞬间，写下它，或许就是答案。'},
+    {emoji:'🧲', name:'U型磁铁', keywords:'两极·平衡·吸引', desc:'两极共存，寻找平衡。', answer:'接受生活中的对立，找到属于你的平衡点。'},
+    {emoji:'🌻', name:'太阳花', keywords:'追随光明·活力', desc:'永远面向太阳。', answer:'把注意力集中在美好上，你也会发光。'},
+    {emoji:'🫧', name:'泡泡', keywords:'轻盈·童真·易逝', desc:'透明的快乐。', answer:'保持一点童心，简单的快乐就在身边。'},
+    {emoji:'🪐', name:'土星环', keywords:'边界·自律·光环', desc:'美丽的环，源于自律的旋转。', answer:'适当的自律让你更加美丽，光环也随之而来。'},
+    {emoji:'🧊', name:'水晶', keywords:'澄清·能量·结构', desc:'有序的结构，通透的能量。', answer:'梳理你的思绪，让一切变得清晰。'}
+  ];
+
+  let remainingCards = shuffleArray([...cardDeck]);
+  let currentCard = null;
+  let drawnCards = [];
+  let selectedChange = '';
+  let selectedMoods = [];
+  let currentHintTarget = '';
+
+  // 初始化
+  document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+  initCanvas();
+  updateHistory();
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function speak(text, rate=0.9, pitch=1.1) {
+    if (!window.speechSynthesis) return;
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'zh-CN';
+    utter.rate = rate;
+    utter.pitch = pitch;
+    const voices = speechSynthesis.getVoices();
+    const sweetVoice = voices.find(v => v.lang === 'zh-CN' && (v.name.includes('Ting') || v.name.includes('Mei'))) || voices.find(v => v.lang === 'zh-CN') || voices[0];
+    if (sweetVoice) utter.voice = sweetVoice;
+    speechSynthesis.speak(utter);
+  }
+
+  function toggleMusic() {
+    const audio = document.getElementById('bgMusic');
+    const btn = document.getElementById('musicToggle');
+    if (audio.paused) {
+      audio.play().then(() => {
+        btn.textContent = '🎵 暂停音乐';
+      }).catch(() => alert('请先点击页面任意位置，然后再次开启音乐'));
+    } else {
+      audio.pause();
+      btn.textContent = '🎵 开启音乐';
+    }
+  }
+
+  function drawCard() {
+    if (remainingCards.length === 0) {
+      alert('🎴 所有卡牌都已抽完，请重新洗牌。');
+      return;
+    }
+    const idx = Math.floor(Math.random() * remainingCards.length);
+    currentCard = remainingCards.splice(idx, 1)[0];
+    drawnCards.push(currentCard);
+
+    const ohCard = document.getElementById('ohCard');
+    ohCard.classList.remove('back');
+    ohCard.querySelector('.card-inner').innerHTML = `
+      <div class="card-emoji">${currentCard.emoji}</div>
+      <div class="card-name">${currentCard.name}</div>
+      <div class="card-keywords">${currentCard.keywords}</div>
+      <div class="card-desc">${currentCard.desc}</div>
+    `;
+
+    document.getElementById('q2Hint').innerHTML = `这张卡牌所代表的品质或力量（${currentCard.keywords}），在你过去的什么时候展现过？哪怕是很小的瞬间。`;
+    document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+    updateHistory();
+    speak(`${currentCard.name}，${currentCard.desc}`, 0.85, 1.1);
+  }
+
+  function reshuffleCards() {
+    remainingCards = shuffleArray([...cardDeck]);
+    drawnCards = [];
+    currentCard = null;
+    const ohCard = document.getElementById('ohCard');
+    ohCard.classList.add('back');
+    ohCard.querySelector('.card-inner').innerHTML = `<div class="back-text">OH</div><div class="back-sub">点击抽取</div>`;
+    document.getElementById('q2Hint').innerHTML = '这张卡牌所代表的品质或力量（勇气、创造力、好奇心……），在你过去的什么时候展现过？哪怕是很小的瞬间。';
+    document.getElementById('cardHistory').innerHTML = '📋 卡牌已重新洗好，请抽取';
+    window.speechSynthesis.cancel();
+  }
+
+  function updateHistory() {
+    const div = document.getElementById('cardHistory');
+    if (drawnCards.length === 0) {
+      div.innerHTML = '📋 尚未抽取卡牌';
+      return;
+    }
+    let html = '📋 已抽取：';
+    drawnCards.forEach(c => html += `<span style="background:#F3E9DF; border-radius:12px; padding:2px 10px; margin:2px;">${c.emoji} ${c.name}</span> `);
+    html += ` <small>(剩余${remainingCards.length}张)</small>`;
+    div.innerHTML = html;
+  }
+
+  // 提示弹窗改进
+  function showHint(targetId) {
+    if (!currentCard) {
+      alert('请先抽取一张OH卡！');
+      return;
+    }
+    currentHintTarget = targetId;
+    document.getElementById('hintModal').style.display = 'flex';
+    document.getElementById('modalAnswer').style.display = 'none';
+    document.getElementById('modalButtons').style.display = 'flex';
+    // 问题提示文本
+    let questionText = '';
+    if (targetId === 'q1') questionText = '你能描述一下卡牌给你的第一感觉吗？';
+    else if (targetId === 'q2') questionText = '你曾经在什么小事上展现过这种品质？';
+    else if (targetId === 'q3') questionText = '这个资源能如何帮你减少刷手机的时间？';
+    document.getElementById('hintQuestion').textContent = questionText;
+  }
+
+  function closeHintModal() {
+    document.getElementById('hintModal').style.display = 'none';
+  }
+
+  function showAnswer() {
+    const answer = currentCard.answer;
+    document.getElementById('modalAnswer').textContent = '✨ ' + answer;
+    document.getElementById('modalAnswer').style.display = 'block';
+    document.getElementById('modalButtons').style.display = 'none';
+    speak(answer, 0.9, 1.0);
+    // 显示答案后，自动关闭按钮保留（点击遮罩或X均可关闭）
+  }
+
+  // 画布
+  const canvas = document.getElementById('drawCanvas');
+  const ctx = canvas.getContext('2d');
+  let painting = false, tool='pen', lastX=0, lastY=0;
+  function initCanvas() { ctx.fillStyle = '#FFFDF8'; ctx.fillRect(0,0,canvas.width,canvas.height); }
+  function setTool(t){ tool=t; document.getElementById('penTool').classList.toggle('active',t==='pen'); document.getElementById('eraserTool').classList.toggle('active',t==='eraser'); }
+  function clearCanvas(){ if(confirm('清空画布？')) initCanvas(); }
+
+  function getPos(e){
+    const rect = canvas.getBoundingClientRect();
+    const sx = canvas.width/rect.width, sy = canvas.height/rect.height;
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x:(clientX-rect.left)*sx, y:(clientY-rect.top)*sy };
+  }
+  function startPaint(e){ painting=true; const p=getPos(e); lastX=p.x; lastY=p.y; drawDot(e); if(e.type==='touchstart') e.preventDefault(); }
+  function stopPaint(){ painting=false; ctx.beginPath(); }
+  function drawDot(e){
+    if(!painting) return;
+    const p=getPos(e);
+    ctx.lineWidth = document.getElementById('brushSize').value;
+    ctx.lineCap='round'; ctx.lineJoin='round';
+    ctx.strokeStyle = tool==='pen' ? document.getElementById('colorPicker').value : '#FFFDF8';
+    ctx.beginPath(); ctx.moveTo(lastX,lastY); ctx.lineTo(p.x,p.y); ctx.stroke();
+    lastX=p.x; lastY=p.y;
+    if(e.type==='touchmove') e.preventDefault();
+  }
+  canvas.addEventListener('mousedown',startPaint); canvas.addEventListener('mousemove',drawDot);
+  canvas.addEventListener('mouseup',stopPaint); canvas.addEventListener('mouseleave',stopPaint);
+  canvas.addEventListener('touchstart',startPaint,{passive:false}); canvas.addEventListener('touchmove',drawDot,{passive:false});
+  canvas.addEventListener('touchend',stopPaint);
+
+  function updateScore(){ document.getElementById('scoreDisplay').textContent = document.getElementById('scoreSlider').value; }
+  function selectChange(type,btn){
+    selectedChange=type;
+    document.querySelectorAll('#changeBtns button').forEach(b=>b.classList.remove('selected'));
+    btn.classList.add('selected');
+  }
+  function toggleMood(el){ el.classList.toggle('selected'); const t=el.textContent.trim(); selectedMoods.includes(t) ? selectedMoods=selectedMoods.filter(m=>m!==t) : selectedMoods.push(t); }
+
+  function saveToBrowser(){
+    const data = {
+      name:document.getElementById('nameInput').value, class:document.getElementById('classInput').value,
+      date:document.getElementById('dateInput').value, currentCard, drawnCards: drawnCards.map(c=>c.name),
+      q1:document.getElementById('q1').value, q2:document.getElementById('q2').value, q3:document.getElementById('q3').value,
+      qDrawing:document.getElementById('qDrawing').value, commitTime:document.getElementById('commitTime').value,
+      commitReward:document.getElementById('commitReward').value, score:document.getElementById('scoreSlider').value,
+      scoreChange:selectedChange, targetScore:document.getElementById('targetScore').value,
+      qException:document.getElementById('qException').value, moods:selectedMoods,
+      customMood:document.getElementById('customMood').value, participation:5
+    };
+    localStorage.setItem('ohgroup2', JSON.stringify(data));
+    alert('✅ 已保存！');
+  }
+  function loadFromBrowser(){
+    const raw = localStorage.getItem('ohgroup2');
+    if(!raw) return alert('没有保存数据');
+    if(!confirm('恢复保存的数据？')) return;
+    const d=JSON.parse(raw);
+    Object.keys(d).forEach(k=>{
+      const el = document.getElementById(k);
+      if(el) el.value = d[k] || '';
+    });
+    if(d.score) { document.getElementById('scoreSlider').value = d.score; updateScore(); }
+    if(d.moods) {
+      selectedMoods = d.moods;
+      document.querySelectorAll('.mood-tag').forEach(t=>{
+        if(selectedMoods.includes(t.textContent.trim())) t.classList.add('selected');
+        else t.classList.remove('selected');
+      });
+    }
+    alert('已恢复');
+  }
+  function resetAll(){
+    if(!confirm('重置所有？')) return;
+    ['nameInput','classInput','dateInput','q1','q2','q3','qDrawing','commitTime','commitReward','targetScore','qException','customMood'].forEach(id=>document.getElementById(id).value='');
+    document.getElementById('scoreSlider').value=5; updateScore();
+    selectedMoods=[]; document.querySelectorAll('.mood-tag').forEach(t=>t.classList.remove('selected'));
+    selectedChange=''; document.querySelectorAll('#changeBtns button').forEach(b=>b.classList.remove('selected'));
+    initCanvas(); reshuffleCards();
+    document.getElementById('dateInput').value = new Date().toISOString().split('T')[0];
+  }
+
+  // 尝试预加载 voices
+  if (window.speechSynthesis) {
+    speechSynthesis.getVoices();
+    speechSynthesis.onvoiceschanged = () => { speechSynthesis.getVoices(); };
+  }
+</script>
+</body>
+</html>
